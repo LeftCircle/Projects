@@ -104,20 +104,23 @@ void printCardType(long n)
         //if n - 1 < 0, we have completed all of the checks
         if (n - 1 < 0)
         {
-            if (lastDigit == 4 && digitCounter == 16 && digitCounter == 13 )
+            if (lastDigit == 4 && (digitCounter == 16 || digitCounter == 13))
             {
                 printf("VISA\n");
+                break;
             }
             
-            if (lastDigit == 3 && digitCounter == 15 && (lld == 4 || lld == 5))
+            if (lastDigit == 3 && digitCounter == 15 && (lld == 4 || lld == 7))
             {
                printf("AMEX\n");
+                break;
             }
             
             if (lastDigit == 5 && digitCounter == 16 && (
                 (lld == 1 || lld == 2 || lld == 3 || lld == 4 || lld == 5)))
             {
                 printf("MASTERCARD\n");
+                break;
             }
             
             else
