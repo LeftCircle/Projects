@@ -36,7 +36,7 @@ void builder(int n)
         {
             if(j == ((printTimes + 1) / 2 ))
             {
-                printf(" ");
+                printf("  ");
             }
             if(j == printTimes)
             {
