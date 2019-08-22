@@ -38,7 +38,7 @@ int main(int argc, string argv[])
             else
             {
                 printf("Usage: ./vigenere keyword\n");
-                return 0;
+                return 1;
             }
         }
         // Shifter has been created, so now request and store plaintext
@@ -62,7 +62,8 @@ int main(int argc, string argv[])
                         
             int newAscii = vigVal(plainText[i], shifter[counter]);
             printf("%c", newAscii);
-            if (newAscii != 32)
+            if ((newAscii < 91  && newAscii > 64) ||
+                (newAscii < 123 && newAscii > 96))
             {
                 counter += 1;
                 //printf("%c", newChar);
