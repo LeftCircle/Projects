@@ -76,6 +76,10 @@ int main(int argc, string argv[])
         printf("\n");    
             
     }
+    else
+    {
+        return 1;
+    }
 }
 
 int checkInput(int argcount, string arguments[])
