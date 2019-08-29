@@ -15,6 +15,8 @@ FILE *inptr;
 // Functions
 void writeNewColBig(int inputWidth, int oldPadding, int newWidth, int newPadding, int seek);
 void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPadding, int inputWidth, int newWidth);
+void writeNewSmall(int inputWidth, int oldPadding, int newWidth, int newPadding, int newHeight);
+
 
 // Main Function!
 
@@ -103,11 +105,15 @@ int main(int argc, char *argv[])
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
     // iterate over infile's scanlines if f <= 1
-    //if (f >= 1)
-    //{
+    if (f >= 1)
+    {
     // Create new image!
-    writeNewRowBig(inputHeight, oldPadding, newHeight, newPadding, inputWidth, newWidth);
-    //}
+        writeNewRowBig(inputHeight, oldPadding, newHeight, newPadding, inputWidth, newWidth);
+    }
+    else
+    {
+        writeNewSmall(inputWidth, oldPadding, newWidth, newPadding, newHeight);
+    }
 
     // close infile
     fclose(inptr);
@@ -221,11 +227,68 @@ void writeNewColBig(int inputWidth, int oldPadding, int newWidth, int newPadding
         //printf("position of cursor before fseek %ld \n", ftell(inptr));
         fseek(inptr, (-inputWidth) * sizeof(RGBTRIPLE), SEEK_CUR);
         //printf("position AFTER fseek %ld \n", ftell(inptr));
+
     }
 
     // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
     {
         fputc(0x00, outptr);
+    }
+}
+
+
+void writeNewSmall(int inputWidth, int oldPadding, int newWidth, int newPadding, int newHeight)
+{
+    int countC = 0;
+    int skipsPerPixel = 0;
+    float skipsPerPixelStart = (float)inputWidth / (float)newWidth;
+    if (skipsPerPixelStart >  (float)(int)skipsPerPixelStart)
+    {
+        skipsPerPixel = (int)(skipsPerPixelStart + 1);
+    }
+    else
+    {
+        skipsPerPixel = (int) skipsPerPixelStart;
+    }
+    printf("skipsPerPixel %i", skipsPerPixel);
+    for (int j = 0; j < abs(newHeight); j++)
+    {
+    // Iterate and skip over pixels in scanline
+        for (int i = 0; i < abs(newWidth); i++)
+        {
+            // temporary storage
+            RGBTRIPLE triple;
+            printf("Seek cur %i\n", SEEK_CUR);
+
+            if (SEEK_CUR + skipsPerPixel > inputWidth)
+            {
+                printf("first if was called\n");
+                fseek(inptr, 1, SEEK_CUR);
+            }
+            if (SEEK_CUR % inputWidth == 0)
+            {
+                printf("second if was called\n");
+                // Skip from the start to the appropriate line
+                int newLine = (j) * (inputWidth + oldPadding) * sizeof(RGBTRIPLE);
+                fseek(inptr, newLine, 54);
+                for (int k = 0; k < newPadding; k++)
+                {
+                    fputc(0x00, outptr);
+                }
+
+            }
+            else
+            {
+                // read RGB triple from infile
+                fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+
+                // write RGB triple to outfile
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                printf("ocation before %ld\n", ftell(inptr));
+                fseek(inptr, skipsPerPixel * sizeof(RGBTRIPLE), SEEK_CUR);
+                printf("location after %ld\n",ftell(inptr));
+            }
+        }
     }
 }
