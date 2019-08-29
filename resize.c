@@ -96,24 +96,18 @@ int main(int argc, char *argv[])
     bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) +
                 sizeof(BITMAPINFOHEADER);
 
-
-
-
-
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
     // write outfile's BITMAPINFOHEADER
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
 
-
-
     // iterate over infile's scanlines if f <= 1
-    if (f >= 1)
-    {
-        // Create new image!
-        writeNewRowBig(inputHeight, oldPadding, newHeight, newPadding, inputWidth, newWidth);
-    }
+    //if (f >= 1)
+    //{
+    // Create new image!
+    writeNewRowBig(inputHeight, oldPadding, newHeight, newPadding, inputWidth, newWidth);
+    //}
 
     // close infile
     fclose(inptr);
@@ -164,6 +158,7 @@ void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPaddi
             //    }
             //    else
             //    {
+            seek = 0;
             for (int k = 0; k < abs(newHeight) - countH; k++)
             {
                 writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
