@@ -308,7 +308,9 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
             fseek(inptr, -distToEndl, SEEK_CUR);
             printf("updated Position %ld\n", ftell(inptr));
         }
+
     }
+    fseek(inptr, oldPadding, SEEK_CUR);
         // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
     {
