@@ -283,13 +283,13 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
         printf("currentPosition %ld\n", ftell(inptr));
         int nextLine = (j + 1) * sizeof(RGBTRIPLE) * (inputWidth + oldPadding) + 54;
         printf("nextLine = %i\n", nextLine);
-        if (ftell(inptr) > nextLine)
-        {
-            printf("end of next line %i\n", nextLine);
-            int distToEndl = ftell(inptr) - nextLine;
-            fseek(inptr, -distToEndl, SEEK_CUR);
-            printf("updated Position %ld\n", ftell(inptr));
-        }
+        //if (ftell(inptr) > nextLine)
+        //{
+        //   printf("end of next line %i\n", nextLine);
+        //    int distToEndl = ftell(inptr) - nextLine;
+        //    fseek(inptr, -distToEndl, SEEK_CUR);
+        //    printf("updated Position %ld\n", ftell(inptr));
+        //}
 
     }
 
