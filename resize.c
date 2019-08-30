@@ -280,7 +280,7 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
 
         fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
         printf("currentPosition %ld\n", ftell(inptr));
-        int nextLine = (j + 1) * sizeof(RGBTRIPLE) * (inputWidth) + 54 + j * oldPadding;
+        int nextLine = (j + 1) * sizeof(RGBTRIPLE) * (inputWidth) + 54 + j * oldPadding * sizeof(RGBTRIPLE);
         printf("nextLine = %i\n", nextLine);
         if (ftell(inptr) > nextLine)
         {
@@ -292,7 +292,7 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
 
     }
 
-    //fseek(inptr, oldPadding, SEEK_CUR);
+    fseek(inptr, oldPadding, SEEK_CUR);
     // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
     {
