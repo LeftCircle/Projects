@@ -295,8 +295,15 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
 
         // write RGB triple to outfile
         fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+        if (i = newWidth - 1)
+        {
+            fseek(inptr, (skipsPerPixel - 2) * sizeof(RGBTRIPLE), SEEK_CUR);
+        }
 
-        fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
+        else
+        {
+            fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
+        }
     }
         // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
