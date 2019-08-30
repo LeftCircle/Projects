@@ -15,7 +15,7 @@ FILE *inptr;
 // Functions
 void writeNewColBig(int inputWidth, int oldPadding, int newWidth, int newPadding, int seek);
 void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPadding, int inputWidth, int newWidth);
-void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPadding, int newHeight, int skipsPerPixel);
+void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPadding, int newHeight, int skipsPerPixel, int j);
 void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWidth, int newWidth);
 
 
@@ -276,12 +276,13 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
     printf("skipsPerPixel %i\n", skipsPerPixel);
     for (int i = 0; i < abs(newHeight); i++)
     {
-        writeNewColSmall(inputWidth, oldPadding, newWidth, newPadding, newHeight, skipsPerPixel);
+        int counter = 2 * i;
+        writeNewColSmall(inputWidth, oldPadding, newWidth, newPadding, newHeight, skipsPerPixel, counter);
         fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE) *(inputWidth + oldPadding), SEEK_CUR);
     }
 }
 
-void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPadding, int newHeight, int skipsPerPixel)
+void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPadding, int newHeight, int skipsPerPixel, int j)
 {
 
     // Iterate and skip over pixels in scanline
@@ -295,14 +296,17 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
 
         // write RGB triple to outfile
         fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-        if (i = newWidth - 1)
-        {
-            fseek(inptr, (skipsPerPixel - 2) * sizeof(RGBTRIPLE), SEEK_CUR);
-        }
 
-        else
+        fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
+        printf("currentPosition %ld\n", ftell(inptr));
+        int nextLine = (j + 1) * sizeof(RGBTRIPLE) * (inputWidth + oldPadding) + 54;
+        printf("nextLine = %i\n", nextLine);
+        if (ftell(inptr) > nextLine)
         {
-            fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
+            printf("end of next line %i\n", nextLine);
+            int distToEndl = ftell(inptr) - nextLine;
+            fseek(inptr, -distToEndl, SEEK_CUR);
+            printf("updated Position %ld\n", ftell(inptr));
         }
     }
         // then add it back (to demonstrate how)
