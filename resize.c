@@ -259,7 +259,7 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
         int counter = 2 * i;
         writeNewColSmall(inputWidth, oldPadding, newWidth, newPadding, newHeight, skipsPerPixel, counter);
         fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE) * (inputWidth + oldPadding), SEEK_CUR);
-        printf("fseek should have been called %lu\n", (skipsPerPixel - 1) * sizeof(RGBTRIPLE) * (inputWidth + oldPadding));
+        printf("fseek should have been called %lu\n", (skipsPerPixel - 1) * (sizeof(RGBTRIPLE) * (inputWidth) = oldPadding));
     }
 }
 
