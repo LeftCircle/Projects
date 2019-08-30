@@ -249,7 +249,7 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
     float skipsPerPixelStart = (float)inputWidth / (float)newWidth;
     if (skipsPerPixelStart >  (float)(int)skipsPerPixelStart)
     {
-        skipsPerPixel = (int)(skipsPerPixelStart);
+        skipsPerPixel = (int)(skipsPerPixelStart + 1);
     }
     else
     {
@@ -293,7 +293,7 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
 
     }
 
-    fseek(inptr, oldPadding * sizeof(RGBTRIPLE), SEEK_CUR);
+    fseek(inptr, oldPadding, SEEK_CUR);
     // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
     {
