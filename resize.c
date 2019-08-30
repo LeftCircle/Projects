@@ -258,7 +258,7 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
     {
         int counter = 2 * i;
         writeNewColSmall(inputWidth, oldPadding, newWidth, newPadding, newHeight, skipsPerPixel, counter);
-        fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE) *(inputWidth ), SEEK_CUR);
+        fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE) *(inputWidth * oldPadding), SEEK_CUR);
     }
 }
 
@@ -285,7 +285,7 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
         {
             printf("end of next line %i\n", nextLine);
             int distToEndl = ftell(inptr) - nextLine;
-            fseek(inptr, (-distToEndl - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
+            fseek(inptr, (-distToEndl) * sizeof(RGBTRIPLE), SEEK_CUR);
             printf("updated Position %ld\n", ftell(inptr));
         }
 
