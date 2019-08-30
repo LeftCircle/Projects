@@ -285,7 +285,7 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
         {
             printf("end of next line %i\n", nextLine);
             int distToEndl = ftell(inptr) - nextLine;
-            fseek(inptr, (-distToEndl) * sizeof(RGBTRIPLE), SEEK_CUR);
+            fseek(inptr, (-distToEndl - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
             printf("updated Position %ld\n", ftell(inptr));
         }
 
