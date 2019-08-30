@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
     int oldPadding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // Hopefully changing file width, height, and padding
-    bi.biWidth = (long)newWidth ; bi.biHeight = (long)newHeight;
+    bi.biWidth = (long)newWidth;
+    bi.biHeight = (long)newHeight;
 
     printf("newWidth = %i, newHeight = %i\n", bi.biWidth, bi.biHeight);
 
@@ -154,35 +155,35 @@ void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPaddi
     int seek = 0;
 
     for (int i = 0, oldHeight = abs(inputHeight); i < oldHeight; i++)
+    {
+        if (i != oldHeight - 1)
         {
-            if (i != oldHeight - 1)
+            // Pixels for this row should be read here then passed into writeNewCol
+            // Should write j number of rows
+            for (int j = 0; j < (int)scale; j++)
             {
-                // Pixels for this row should be read here then passed into writeNewCol
-                // Should write j number of rows
-                for (int j = 0; j < (int)scale; j++)
+                if ( j == (int) scale - 1)
                 {
-                    if ( j == (int) scale - 1)
-                    {
-                        seek = 1;
-                    }
-                    else
-                    {
-                        seek = 0;
-                    }
-                    writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
-                    countH += 1;
+                    seek = 1;
                 }
-
+                else
+                {
+                    seek = 0;
+                }
+                writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
+                countH += 1;
             }
-            else
+
+        }
+        else
+        {
+            seek = 0;
+            for (int k = 0; k < abs(newHeight) - countH; k++)
             {
-                seek = 0;
-                for (int k = 0; k < abs(newHeight) - countH; k++)
-                {
-                    writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
-                }
+                writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
             }
         }
+    }
 }
 
 
@@ -192,33 +193,30 @@ void writeNewColBig(int inputWidth, int oldPadding, int newWidth, int newPadding
     // iterate over pixels in scanline
     for (int m = 0; m < inputWidth; m++)
     {
-         // This will copy the rows f number of times
-         // temporary storage
-         RGBTRIPLE triple;
-         // read RGB triple from infile
-         fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
-         //printf("position in scanline = %ld \n", ftell(inptr));
+        // This will copy the rows f number of times
+        // temporary storage
+        RGBTRIPLE triple;
+        // read RGB triple from infile
+        fread(&triple, sizeof(RGBTRIPLE), 1, inptr);
+        //printf("position in scanline = %ld \n", ftell(inptr));
 
-         if (m != inputWidth - 1)
+        if (m != inputWidth - 1)
+        {
+            for (int l = 0; l < (int)scale; l++)
             {
-                for (int l = 0; l < (int)scale; l++)
-                {
-
-                    // write RGB triple to outfile
-                    fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-                    countC += 1;
-                }
+                // write RGB triple to outfile
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                countC += 1;
             }
-            else
+        }
+        else
+        {
+            for (int n = 0; n < newWidth - countC; n++)
             {
-                for (int n = 0; n < newWidth - countC; n++)
-                {
-
-                    // write RGB triple to outfile
-                    fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-                }
+                // write RGB triple to outfile
+                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
             }
-
+        }
     }
     // skip over padding, if any
     // and only if it is time!!
@@ -247,7 +245,7 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
     int countC = 0;
     int skipsPerPixel = 0;
     float skipsPerPixelStart = (float)inputWidth / (float)newWidth;
-    if (skipsPerPixelStart >  (float)(int)skipsPerPixelStart)
+    if (skipsPerPixelStart > (float)(int)skipsPerPixelStart)
     {
         skipsPerPixel = (int)(skipsPerPixelStart + 1);
     }
@@ -260,7 +258,7 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
     {
         int counter = 2 * i;
         writeNewColSmall(inputWidth, oldPadding, newWidth, newPadding, newHeight, skipsPerPixel, counter);
-        fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE) *(inputWidth + oldPadding), SEEK_CUR);
+        fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE) *(inputWidth ), SEEK_CUR);
     }
 }
 
