@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     // iterate over infile's scanlines if f <= 1
     if (f >= 1)
     {
-    // Create new image!
+        // Create new image!
         writeNewRowBig(inputHeight, oldPadding, newHeight, newPadding, inputWidth, newWidth);
     }
     else
@@ -147,8 +147,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
-
 void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPadding, int inputWidth, int newWidth)
 {
     // Counter to write the correct number of lines
@@ -160,8 +158,6 @@ void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPaddi
             if (i != oldHeight - 1)
             {
                 // Pixels for this row should be read here then passed into writeNewCol
-
-
                 // Should write j number of rows
                 for (int j = 0; j < (int)scale; j++)
                 {
@@ -180,18 +176,11 @@ void writeNewRowBig(int inputHeight, int oldPadding, int newHeight, int newPaddi
             }
             else
             {
-            //    if (newHeight - countH == 0)
-            //    {
-            //        writeNewColBig(inputWidth, oldPadding, newWidth, newPadding);
-            //    }
-            //    else
-            //    {
-            seek = 0;
-            for (int k = 0; k < abs(newHeight) - countH; k++)
-            {
-                writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
-            }
-            //    }
+                seek = 0;
+                for (int k = 0; k < abs(newHeight) - countH; k++)
+                {
+                    writeNewColBig(inputWidth, oldPadding, newWidth, newPadding, seek);
+                }
             }
         }
 }
@@ -222,19 +211,12 @@ void writeNewColBig(int inputWidth, int oldPadding, int newWidth, int newPadding
             }
             else
             {
-            //    if (newWidth - countC == 0)
-            //    {
-            //        fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-            //    }
-            //    else
-            //    {
-            for (int n = 0; n < newWidth - countC; n++)
-            {
+                for (int n = 0; n < newWidth - countC; n++)
+                {
 
-                // write RGB triple to outfile
-                fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
-            }
-            //    }
+                    // write RGB triple to outfile
+                    fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
+                }
             }
 
     }
@@ -267,7 +249,7 @@ void writeNewRowSmall(int oldPadding, int newHeight, int newPadding, int inputWi
     float skipsPerPixelStart = (float)inputWidth / (float)newWidth;
     if (skipsPerPixelStart >  (float)(int)skipsPerPixelStart)
     {
-        skipsPerPixel = (int)(skipsPerPixelStart + 1);
+        skipsPerPixel = (int)(skipsPerPixelStart);
     }
     else
     {
@@ -310,8 +292,9 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
         }
 
     }
+
     fseek(inptr, oldPadding, SEEK_CUR);
-        // then add it back (to demonstrate how)
+    // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
     {
         fputc(0x00, outptr);
