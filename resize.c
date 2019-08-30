@@ -292,7 +292,7 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
 
     }
 
-    fseek(inptr, oldPadding, SEEK_CUR);
+    //fseek(inptr, oldPadding, SEEK_CUR);
     // then add it back (to demonstrate how)
     for (int k = 0; k < newPadding; k++)
     {
