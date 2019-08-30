@@ -71,6 +71,8 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Unsupported file format.\n");
         return 4;
     }
+    printf("file size OLD %i\n", bf.bfSize);
+    printf("imageSize OLD %i\n", bi.biSizeImage);
 
     // Finding original file width and height
     long inputWidth  = bi.biWidth;
@@ -79,31 +81,50 @@ int main(int argc, char *argv[])
     printf("inputWidth = %li, inputHeight = %li\n", inputWidth, inputHeight);
 
     // Scaling the width and height by f and determine padding
-    float newWidth  = f * inputWidth;
-    float newHeight = f * inputHeight;
+    long newWidth  = f * inputWidth;
+    long newHeight = f * inputHeight;
 
     // Determine padding for scanlines
     int oldPadding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // Hopefully changing file width, height, and padding
     bi.biWidth = (long)newWidth ; bi.biHeight = (long)newHeight;
+
     printf("newWidth = %i, newHeight = %i\n", bi.biWidth, bi.biHeight);
 
     int newPadding = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // Update image size (total size of image in bytes including padding)
-    bi.biSizeImage = ((sizeof(RGBTRIPLE) * bi.biWidth) + newPadding) *
+    bi.biSizeImage = (DWORD)((sizeof(RGBTRIPLE) * bi.biWidth) + newPadding) *
                     abs(bi.biHeight);
 
     // Update file size
-    bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) +
-                sizeof(BITMAPINFOHEADER);
+    bf.bfSize = (DWORD)(bi.biSizeImage + sizeof(BITMAPFILEHEADER) +
+                sizeof(BITMAPINFOHEADER));
+
+    // Setting reserved1 and 2 to 0
+    bf.bfReserved1 = 0;
+    bf.bfReserved2 = 0;
+    printf("file size NEW %i\n", bf.bfSize);
 
     // write outfile's BITMAPFILEHEADER
     fwrite(&bf, sizeof(BITMAPFILEHEADER), 1, outptr);
 
+
     // write outfile's BITMAPINFOHEADER
     fwrite(&bi, sizeof(BITMAPINFOHEADER), 1, outptr);
+
+    printf("imageSize NEW %i\n", bi.biSizeImage);
+
+    // ensure infile is (likely) a 24-bit uncompressed BMP 4.0
+    if (bf.bfType != 0x4d42 || bf.bfOffBits != 54 || bi.biSize != 40 ||
+        bi.biBitCount != 24 || bi.biCompression != 0)
+    {
+        fclose(outptr);
+        fclose(inptr);
+        fprintf(stderr, "Unsupported file format.\n");
+        return 5;
+    }
 
     // iterate over infile's scanlines if f <= 1
     if (f >= 1)
@@ -276,5 +297,10 @@ void writeNewColSmall(int inputWidth, int oldPadding, int newWidth, int newPaddi
         fwrite(&triple, sizeof(RGBTRIPLE), 1, outptr);
 
         fseek(inptr, (skipsPerPixel - 1) * sizeof(RGBTRIPLE), SEEK_CUR);
+    }
+        // then add it back (to demonstrate how)
+    for (int k = 0; k < newPadding; k++)
+    {
+        fputc(0x00, outptr);
     }
 }
