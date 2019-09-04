@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "recover.h"
-#include <stdbool.h>
+
 /*
 use fopen and check return value to ensure it is not null
 
@@ -58,6 +57,15 @@ sprintf(filename, "%03i.jpg", 2);
 
 could be cleaned up with some more functions
 */
+
+// Global Variables
+int endOfFile = 1;
+int nPics = 0;
+char binCounter = 0;
+
+// Function declerations in recoverFunctions file
+int checkHeader(unsigned char buffer[]);
+
 
 int main(int argc, char *argv[])
 {
@@ -159,9 +167,4 @@ int checkHeader(unsigned char buffer[])
         return 1;
     }
     return 0;
-}
-
-void writeFile()
-{
-
 }
