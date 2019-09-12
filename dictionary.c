@@ -18,7 +18,7 @@ int nDeletedPtrs = 0;
 int nPtrs = 0;
 
 // Function to generate new nodes in the trie
-node *newNode(void)
+node *newNode(node *parent)
 {
     node *nodePTR = NULL;
 
@@ -33,6 +33,7 @@ node *newNode(void)
         nodePTR->children[i] = NULL;
     }
     nPtrs += 1;
+    nodePTR->parent = parent;
 
     return nodePTR;
 }
@@ -53,6 +54,7 @@ bool load(const char *dictionary)
     {
         root->children[i] = NULL;
     }
+    root->parent = NULL;
 
     // Open dictionary
     FILE *file = fopen(dictionary, "r");
@@ -85,7 +87,7 @@ bool load(const char *dictionary)
             if (!currentPath->children[key])
             {
                 // build new path
-                currentPath->children[key] = newNode();
+                currentPath->children[key] = newNode(currentPath);
                 currentPath = currentPath->children[key];
                 //printf("built a new path at %i\n", key);
             }
@@ -209,8 +211,11 @@ bool isEmpty(node *nodePTR)
 int checkPath(node *nodePTR)
 {
     bool running = true;
+    bool emptyCalled = false;
     while(running == true)
     {
+        emptyCalled = false;
+
         //printf("running\n");
         // This section frees the memory of the children of the node if the children are empty
         if (!isEmpty(nodePTR))
@@ -227,9 +232,13 @@ int checkPath(node *nodePTR)
                         free(nodePTR->children[i]);
                         nodePTR->children[i] = NULL;
                         //printf("Freed at index %i\n", i);
-                        nodePTR = root;
                     }
                 }
+            }
+            if (isEmpty(nodePTR))
+            {
+                nodePTR = nodePTR->parent;
+                emptyCalled = true;
             }
             if (isEmpty(root))
             {
@@ -238,18 +247,20 @@ int checkPath(node *nodePTR)
                 return 1;
                 //printf("it finaly worked!!!!!!!!\n");
             }
-
-            int currentN = 0;
-            bool newPath = false;
-            while (newPath == false)
+            if (emptyCalled == false)
             {
-                if (nodePTR->children[currentN])
+                int currentN = 0;
+                bool newPath = false;
+                while (newPath == false)
                 {
-                    //printf("new path found at %i\n", currentN);
-                    nodePTR = nodePTR->children[currentN];
-                    newPath = true;
+                    if (nodePTR->children[currentN])
+                    {
+                        //printf("new path found at %i\n", currentN);
+                        nodePTR = nodePTR->children[currentN];
+                        newPath = true;
+                    }
+                    currentN += 1;
                 }
-                currentN += 1;
             }
         }
         /*

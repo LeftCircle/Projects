@@ -18,6 +18,7 @@ typedef struct node
 {
     bool is_word;
     struct node *children[N];
+    struct node *parent;
 }
 node;
 
@@ -30,7 +31,7 @@ bool load(const char *dictionary);
 unsigned int size(void);
 bool check(const char *word);
 bool unload(void);
-node *newNode(void);
+node *newNode(node *parent);
 int keyVal(char c);
 bool isEmpty(node *nodePTR);
 int checkPath(node *nodePTR);
