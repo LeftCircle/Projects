@@ -116,7 +116,7 @@ unsigned int size(void)
 {
     // TODO
 
-    return 0;
+    return nDicWords;
 }
 
 // Returns true if word is in dictionary else false
@@ -163,12 +163,12 @@ bool unload(void)
     //     if all children == null, delete the pointer
     if (checkPath(root) == 1)
     {
-        printf("number of pointers = %i \n", nPtrs);
-        printf("number of deletedPtrs = %i \n", nDeletedPtrs);
+        //printf("number of pointers = %i \n", nPtrs);
+        //printf("number of deletedPtrs = %i \n", nDeletedPtrs);
         return true;
     }
-    printf("number of pointers = %i \n", nPtrs);
-    printf("number of deletedPtrs = %i \n", nDeletedPtrs);
+    //printf("number of pointers = %i \n", nPtrs);
+    //printf("number of deletedPtrs = %i \n", nDeletedPtrs);
 
     return false;
 }
@@ -186,22 +186,6 @@ int keyVal(char c)
     }
 }
 
-/*
-void freeMem(node *nodePTR, int key)
-{
-    // find longest path then free bottom layer then repeat
-    int longestRoute = 0;
-    for int(i = 0; i < N; i++)
-    {
-        if (nodePTR->children[i] )
-        {
-
-            nodePTR = nodePTR->children[i];
-            freeMem(node *nodePTR);
-        }
-    }
-}
-*/
 
 bool isEmpty(node *nodePTR)
 {
@@ -221,51 +205,7 @@ bool isEmpty(node *nodePTR)
 
 }
 
-/*
-int checkPath(node *nodePTR)
-{
-    //End condition
-    if (!root)
-    {
-        //free(root);
-        printf("properly deleted");
-        return 1;
-    }
 
-    if (!isEmpty(nodePTR))
-    {
-        for (int i = 0; i < N; i++)
-        {
-            if (nodePTR->children[i])
-            {
-                if (isEmpty(nodePTR->children[i]))
-                {
-                    free(nodePTR->children[i]);
-                    printf("Freed at index %i\n", i);
-                }
-                else
-                {
-                    nodePTR = nodePTR->children[i];
-                    printf("Went down path %i\n", i);
-                    checkPath(nodePTR);
-
-                }
-            }
-        }
-    }
-
-    if (isEmpty(nodePTR))
-    {
-        free(nodePTR);
-        if (root)
-        {
-            checkPath(root);
-        }
-    }
-    printf("checkPath broke\n");
-    return 0;
-}
-*/
 int checkPath(node *nodePTR)
 {
     bool running = true;
@@ -305,7 +245,7 @@ int checkPath(node *nodePTR)
             {
                 if (nodePTR->children[currentN])
                 {
-                    printf("new path found at %i\n", currentN);
+                    //printf("new path found at %i\n", currentN);
                     nodePTR = nodePTR->children[currentN];
                     newPath = true;
                 }
