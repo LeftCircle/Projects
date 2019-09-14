@@ -1,0 +1,25 @@
+.burner
+{
+    color: red;
+}
+
+#blueB
+{
+    background-color: blue;
+    color: white;
+}
+
+.largeText
+{
+    font-size: large;
+}
+
+.centerText
+{
+    text-align: center;
+}
+
+.bordered
+{
+    border:2px solid Violet;
+}
