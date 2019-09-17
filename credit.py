@@ -1,5 +1,6 @@
 from cs50 import get_int
 
+
 def main():
 
     # Getting the number
@@ -14,6 +15,8 @@ def main():
 # Doubling every other number starting with the second to last and summing
 # With the sum of all non doubled numbers and checking if %10 == 0
 # 1 == valid, 0 == invalid
+
+
 def isValid(n):
     # Figure out last digit, do work with it, subtract it from
     # The number, then divide by 10 to eliminate it
@@ -24,10 +27,10 @@ def isValid(n):
     oddSum = 0
     while running == True:
         # Determining last digit
-        lastDigit = n % 10;
+        lastDigit = n % 10
 
         # Removing it from the card number
-        n -= lastDigit;
+        n -= lastDigit
         # If n - 1 < 0, we have completed all of the checks
         if n - 1 < 0:
             running = False
@@ -43,7 +46,6 @@ def isValid(n):
                 evenSum += digit1 + 1
             else:
                 evenSum += lastDigit
-
 
         else:
             oddSum += lastDigit
@@ -66,26 +68,25 @@ def printCardType(n):
 
         # Removing it from the card number
         n -= lastDigit
-        n /= 10;
-        #if n - 1 < 0, we have completed all of the checks
+        n /= 10
+        # If n - 1 < 0, we have completed all of the checks
         if (n - 1 < 0):
             if lastDigit == 4 and (digitCounter == 16 or digitCounter == 13):
                 print("VISA")
 
             if (lastDigit == 3 and digitCounter == 15 and (lld == 4 or lld == 7)):
-               print("AMEX");
+                print("AMEX")
 
             if (lastDigit == 5 and digitCounter == 16 and (
-                (lld == 1 or lld == 2 or lld == 3 or lld == 4 or lld == 5))):
+                    (lld == 1 or lld == 2 or lld == 3 or lld == 4 or lld == 5))):
                 print("MASTERCARD")
-
 
             else:
                 print("INVALID")
 
-
             running = False
 
         lld = lastDigit
+
 
 main()
