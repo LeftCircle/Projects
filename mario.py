@@ -36,9 +36,6 @@ def builder(size):
         for i in range(blocks):
             print('#', end="")
 
-        for i in range(spaces):
-            print(' ', end="")
-
         #now we need a newline
         print()
 
