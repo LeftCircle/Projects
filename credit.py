@@ -88,3 +88,4 @@ def printCardType(n):
 
         lld = lastDigit
 
+main()
