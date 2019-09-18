@@ -14,16 +14,16 @@ def main():
         text = get_string("What text would you like to censor?  ")
 
         # Making the text lowercase
-        text = text.lower()
-        print(text)
+        checkText = text.lower()
 
         # Tokenize the message with split
+        splitCheckText = checkText.split(' ')
         splitText = text.split(' ')
 
-        for i in range(len(splitText)):
+        for i in range(len(splitCheckText)):
 
-            if splitText[i] in bannedWords:
-                starLen = len(splitText[i])
+            if splitCheckText[i] in bannedWords:
+                starLen = len(splitCheckText[i])
                 splitText[i] = "*" * starLen
 
             print(splitText[i], end = " ")
