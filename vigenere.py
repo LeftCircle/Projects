@@ -59,6 +59,8 @@ def main():
         print()
 
     else:
+        print("exit code should be 1")
+        sys.exit(1)
         return 1
 
 
@@ -73,6 +75,9 @@ def checkInput(argcount, arguments):
     # and confirm it is within the ascii values for letters
     if arguments[1].isalpha():
         return 1
+
+    print("Usage: ./vigenere keyword ")
+
     return 0
 
 
