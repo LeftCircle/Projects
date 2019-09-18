@@ -66,7 +66,7 @@ def checkInput(argcount, arguments):
     # Checking to confirm only two arguments
     if (argcount != 2):
         print("Usage: ./vigenere keyword ")
-        return 0
+        return 1
 
     # Check must be made to confirm letters not numbers
     # just check ascii value of the char in the string
