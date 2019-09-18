@@ -66,13 +66,14 @@ def checkInput(argcount, arguments):
     # Checking to confirm only two arguments
     if (argcount != 2):
         print("Usage: ./vigenere keyword ")
-        return 1
+        return 0
 
     # Check must be made to confirm letters not numbers
     # just check ascii value of the char in the string
     # and confirm it is within the ascii values for letters
 
     return 1
+
 
 
 # Takes one key character and returns one key shift
