@@ -26,7 +26,7 @@ def main():
                 starLen = len(splitCheckText[i])
                 splitText[i] = "*" * starLen
 
-            print(splitText[i], end = " ")
+            print(splitText[i], end=" ")
 
         print()
 
@@ -44,6 +44,8 @@ def checkInput(argcount, arguments):
     return 1
 
 # Load dictionary from the cs50 lecture
+
+
 def load(dicToLoad, loadInto):
     # Loads the dictionary into the memory
     file = open(dicToLoad, "r")
@@ -52,7 +54,6 @@ def load(dicToLoad, loadInto):
         loadInto.add(line.rstrip("\n"))
     file.close()
     return True
-
 
 
 if __name__ == "__main__":
