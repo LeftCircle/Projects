@@ -59,7 +59,7 @@ def main():
         print()
 
     else:
-        return 1
+        return 0
 
 
 def checkInput(argcount, arguments):
