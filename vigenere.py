@@ -59,7 +59,7 @@ def main():
         print()
 
     else:
-        return 0
+        return 1
 
 
 def checkInput(argcount, arguments):
@@ -71,7 +71,7 @@ def checkInput(argcount, arguments):
     # Check must be made to confirm letters not numbers
     # just check ascii value of the char in the string
     # and confirm it is within the ascii values for letters
-    if arguments[1].isalnum():
+    if arguments[1].isalpha():
         return 1
     return 0
 
