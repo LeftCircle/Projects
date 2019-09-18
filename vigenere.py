@@ -71,8 +71,9 @@ def checkInput(argcount, arguments):
     # Check must be made to confirm letters not numbers
     # just check ascii value of the char in the string
     # and confirm it is within the ascii values for letters
-
-    return 1
+    if arguments[1].isalnum():
+        return 1
+    return 0
 
 
 
