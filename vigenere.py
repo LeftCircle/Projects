@@ -5,7 +5,7 @@ from cs50 import get_string
 
 
 def main():
-    test = checkInput(len(sys.argv), sys.argv);
+    test = checkInput(len(sys.argv), sys.argv)
     # Only doing work if correct input
     # Determining how many shifts should be made in the messege
     # Must pass in argv[1] to check key
@@ -22,7 +22,7 @@ def main():
         # Must confirm non number input
         for i in range(lenK):
             if ((ord(sys.argv[1][i]) >= 65 and ord(sys.argv[1][i]) <= 90) or
-                (ord(sys.argv[1][i]) >= 97 and ord(sys.argv[1][i]) <= 122)):
+                    (ord(sys.argv[1][i]) >= 97 and ord(sys.argv[1][i]) <= 122)):
                 continue
             else:
                 print("Usage: ./vigenere keyword")
@@ -47,10 +47,10 @@ def main():
 
             newAscii = vigVal(plainText[i], shifter[counter])
 
-            print(newAscii, end='')
+            print(chr(newAscii), end='')
 
-            if ((newAscii < 91  and newAscii > 64) or
-                (newAscii < 123 and newAscii > 96)):
+            if ((newAscii < 91 and newAscii > 64) or
+                    (newAscii < 123 and newAscii > 96)):
                 counter += 1
 
             else:
@@ -61,9 +61,10 @@ def main():
     else:
         return 1
 
+
 def checkInput(argcount, arguments):
     # Checking to confirm only two arguments
-    if (argcount != 2 ):
+    if (argcount != 2):
         print("Usage: ./vigenere keyword ")
         return 0
 
@@ -71,7 +72,7 @@ def checkInput(argcount, arguments):
     # just check ascii value of the char in the string
     # and confirm it is within the ascii values for letters
 
-    return 1;
+    return 1
 
 
 # Takes one key character and returns one key shift
@@ -88,6 +89,8 @@ def keyValue(key):
         return asciiVal - 97
 
 # Takes one character from plainText and converts it with the key
+
+
 def vigVal(pt, keyVal):
     # Convert to ascii
     asciiVal = ord(pt)
@@ -98,10 +101,10 @@ def vigVal(pt, keyVal):
     if (asciiVal <= 90 and asciiVal >= 65):
         newVal = asciiVal + keyVal
         if (newVal > 90):
-            return 65 + (newVal - 91);
+            return 65 + (newVal - 91)
 
         else:
-            return newVal;
+            return newVal
 
     if (asciiVal <= 122 and asciiVal >= 97):
         newVal = asciiVal + keyVal
@@ -112,6 +115,7 @@ def vigVal(pt, keyVal):
             return newVal
 
     # printf("conv is broken");
-    return asciiVal;
+    return asciiVal
+
 
 main()
