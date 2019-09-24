@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block sheet %}
+
+    <!-- http://getbootstrap.com/docs/4.1/content/typography/ -->
+    <h1 class="mb-3">Sheet</h1>
+
+    <!-- http://getbootstrap.com/docs/4.1/components/forms/ -->
+    <form action="/sheet" method="get">
+        <p> This is the sheet!</p>
+        <!-- TODO -->
+        <ul>
+            {% for row in formA %}
+                <li>is this working?</li>
+            {% endfor %}
+
+        </ul>
+
+
+    </form>
+
+
+{% endblock %}
