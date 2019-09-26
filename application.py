@@ -290,7 +290,7 @@ def register():
             return apology("must confirm password", 403)
 
         # Check to see if passwords match
-        elif request.form.get("password") != request.form.get("confirm password"):
+        elif request.form.get("password") != request.form.get("confirmation"):
             return apology("passwords must match")
 
         # Create and store hasehd password
