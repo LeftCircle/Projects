@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Full History
+{% endblock %}
+{% block main %}
+    <form action="/history" method="GET">
+        <!-- table from the cs50 solutions -->
+        <main class="container p-2">
+            <table class="table table-striped">
+                <tr>
+                    {% for header in headers %}
+                        <th>header</th>
+                    {% endfor %}
+                </tr>
+                <tbody>
+                    {% for part in master %}
+                        {% for bit in part %}
+                             <td>{{bit}}</td>
+                         {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+
+    </form>
+{% endblock %}

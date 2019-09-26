@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Your Portfolio
+{% endblock %}
+{% block main %}
+    <form action="/quote" method="post">
+        <p>you have stock in</p>
+        {% for symbol in symbols %}
+            <p>{{symbol}}</p>
+        {% endfor %}
+        <p> with respective shares:</p>
+        {% for share in shares %}
+            <p>{{share}}</p>
+        {% endfor %}
+        <p> each shares is respectivly worth</p>
+        {% for cost in cost_stock %}
+            <p>{{cost}}</p>
+        {% endfor %}
+        <p>your stock is worth {{total_stock_value}}</p>
+        <p>you have {{cash}}</p>
+    </form>
+{% endblock %}
