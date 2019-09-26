@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+<!-- form for stock lookup & form input: symbol the user wants to look up -->
+{% block main %}
+    <form action="/quote" method="post">
+        <p>
+            The stock is: {{name}}, the price is: {{price}}, the symbol is: {{symbol}}
+        </p>
+    </form>
+{% endblock %}
