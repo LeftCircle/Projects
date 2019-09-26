@@ -279,19 +279,19 @@ def register():
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            return apology("must provide username", 403)
+            return apology("must provide username", 400)
 
         # Ensure password was submitted
         elif not request.form.get("password"):
-            return apology("must provide password", 403)
+            return apology("must provide password", 400)
 
         # Ensure second password submitted
         elif not request.form.get("confirm password"):
-            return apology("must confirm password", 403)
+            return apology("must confirm password", 400)
 
         # Check to see if passwords match
         elif request.form.get("password") != request.form.get("confirmation"):
-            return apology("passwords must match")
+            return apology("passwords must match", 400)
 
         # Create and store hasehd password
         hashed_pw = generate_password_hash(request.form.get("password"))
@@ -314,7 +314,7 @@ def register():
         user.set_user(session['user_id'])
         print('and the actual user is ', user.get_user())
         # Redirect user to home page
-        return redirect("/")
+        return redirect("/", 200)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
