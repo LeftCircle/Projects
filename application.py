@@ -147,8 +147,8 @@ def buy():
             db.execute("UPDATE history SET shares = :total_shares WHERE id = :id AND symbol = :symbol",
                         total_shares = total_shares, id = user.get_user(), symbol = symbol)
         sold = 0
-        db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time",
-                   id=user.get_user, symbol=symbol, bought=shares, sold=sold, price=price, time=date)
+        db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time)",
+                   id=user.get_user(), symbol=symbol, bought=shares, sold=sold, price=price, time=date)
 
         return render_template("bought.html", amount=shares, name=name, price=price, left=money_left)
     # User reached route via GET (as by clicking a link or via redirect)
@@ -195,7 +195,7 @@ def history():
 
 
 
-    return render_template("full_history.html", master=master)
+    return render_template("full_history.html", master=master, headers=headers)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -361,8 +361,8 @@ def sell():
                    cash = cash, id = user.get_user())
         date=str(now)
         bought = 0
-        db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time",
-                   id=user.get_user, symbol=symbol, bought=bought, sold=selling, price=price, time=date)
+        db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time)",
+                   id=user.get_user(), symbol=symbol, bought=bought, sold=selling, price=price, time=date)
 
         return index()
 
