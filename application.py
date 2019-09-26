@@ -50,14 +50,43 @@ if not os.environ.get("API_KEY"):
 @app.route("/")
 @login_required
 def index():
+
     """Show portfolio of stocks"""
-    return apology("TODO")
+    # Start off by pulling the users history.
+    hist = db.execute('SELECT * FROM history WHERE id = :id',
+                      id = user.get_user())
+    print(hist)
+    shares = []
+    symbols = []
+    for i in range(len(hist)):
+        shares.append(hist[i]['shares'])
+        symbols.append(hist[i]['symbol'])
+
+    # Determine the current cost of the stocks
+    cost_stock = []
+    for i in range(len(symbols)):
+        quote = lookup(symbols[i])
+        name = quote.get('name')
+        price = quote.get('price')
+        symbol = quote.get('symbol')
+        cost_stock.append(price)
+
+    total_stock_value = 0
+    for i in range(len(shares)):
+        total_stock_value += float(shares[i]) * float(cost_stock[i])
+
+    your_money = db.execute('SELECT cash FROM users WHERE id = :id',
+                            id = user.get_user())
+
+
+    return render_template('index.html', symbols=symbols, shares=shares, cost_stock=cost_stock,
+                            total_stock_value=total_stock_value, cash=your_money)
 
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
-    """Buy shares of stock"""
+    """Buy shares of stock | only keeps track of time of last purchase"""
     if request.method == "POST":
 
 
@@ -94,14 +123,32 @@ def buy():
         update_string = "UPDATE users SET cash = {} WHERE id = {}".format(money_left, user.get_user())
         db.execute(update_string)
 
-        # Add stocks and time to history
         date = str(now)
-        print(date)
-        #update_string = "INSERT INTO history (id, symbol, shares, date) VALUES(:user, :symbol, :shares, :date)",
-        #                          user=user.get_user(), symbol=symbol, sahres=shares, date=date
+        # Add stocks and time to history
+        # First see if the user has bought the stock
+        print('symbol = ', symbol)
+        print('dictionary = ', db.execute("SELECT symbol FROM history"))
+        list = db.execute("SELECT symbol FROM history WHERE id = :id",
+                          id = user.get_user())
+        found = False
+        for i in range(len(list)):
+            if list[i]['symbol'] == symbol:
+                found = True
+        if found == False:
+            db.execute("INSERT INTO history (id, symbol, shares, date) VALUES(:id, :symbol, :shares, :date)",
+                                      id=user.get_user(), symbol=symbol, shares=shares, date=date)
 
-        db.execute("INSERT INTO history (id, symbol, shares, date) VALUES(:id, :symbol, :shares, :date)",
-                                  id=user.get_user(), symbol=symbol, shares=shares, date=date)
+        else:
+            print('shares should be ', db.execute("SELECT shares FROM history WHERE id = :id AND symbol = :symbol",
+                                        id=user.get_user(), symbol=symbol)[0]['shares'])
+            current_shares = db.execute("SELECT shares FROM history WHERE id = :id AND symbol = :symbol",
+                                        id=user.get_user(), symbol=symbol)[0]['shares']
+            total_shares = int(current_shares) + int(shares)
+            db.execute("UPDATE history SET shares = :total_shares WHERE id = :id AND symbol = :symbol",
+                        total_shares = total_shares, id = user.get_user(), symbol = symbol)
+        sold = 0
+        db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time",
+                   id=user.get_user, symbol=symbol, bought=shares, sold=sold, price=price, time=date)
 
         return render_template("bought.html", amount=shares, name=name, price=price, left=money_left)
     # User reached route via GET (as by clicking a link or via redirect)
@@ -121,7 +168,34 @@ def check():
 @login_required
 def history():
     """Show history of transactions"""
-    return apology("TODO")
+
+    # Create a list of the headers in full_history
+    headers = ['Symbol', 'Bought', 'Sold', 'Price', 'Time']
+
+    # Create a list of lists containing the above
+    master = []
+    # get a full list of the history I guess
+    symbols_hist = db.execute("SELECT symbol FROM full_history WHERE id=:id",
+                         id = user.get_user())
+    bought_hist = db.execute("SELECT bought FROM full_history WHERE id=:id",
+                         id = user.get_user())
+    sold_hist = db.execute("SELECT sold FROM full_history WHERE id=:id",
+                         id = user.get_user())
+    price_hist = db.execute("SELECT price FROM full_history WHERE id=:id",
+                         id = user.get_user())
+    time_hist = db.execute("SELECT time FROM full_history WHERE id=:id",
+                         id = user.get_user())
+    for i in range(len(symbols_hist)):
+        master.append([symbols_hist[i]['symbol'],
+                      bought_hist[i]['bought'],
+                      sold_hist[i]['sold'],
+                      price_hist[i]['price'],
+                      time_hist[i]['time']])
+
+
+
+
+    return render_template("full_history.html", master=master)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -252,7 +326,59 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock"""
-    return apology("TODO")
+    if request.method == "POST":
+        # Get how much they are trying to sell
+        selling = request.form.get("shares")
+        stock_sold = request.form.get("symbol")
+
+        # Now see how much they can in fact sell and sell up to their max amount
+        can_sell = db.execute("SELECT shares FROM history WHERE id = :id AND symbol = :symbol",
+                    id = user.get_user(), symbol = stock_sold)[0]['shares']
+
+        if float(selling) > float(can_sell):
+            selling = can_sell
+        shares_left = float(can_sell) - float(selling)
+        # Now remove appropriate amount of stock
+        db.execute("UPDATE history SET shares = :shares_left WHERE id = :id AND symbol = :symbol",
+                    shares_left = shares_left, id = user.get_user(), symbol = stock_sold)
+
+        # Get value of sold stock
+        quote = lookup(stock_sold)
+        name = quote.get('name')
+        price = quote.get('price')
+        print(price, '<--- price of the stock you sold')
+        symbol = quote.get('symbol')
+
+        sell_value = float(price) * float(selling)
+
+        # retrieve your current cash value
+        cash = db.execute("SELECT cash FROM users WHERE id = :id",
+                          id = user.get_user())[0]['cash']
+
+        cash = float(cash) + float(sell_value)
+        # Update cash
+        db.execute("UPDATE users SET cash = :cash WHERE id = :id",
+                   cash = cash, id = user.get_user())
+        date=str(now)
+        bought = 0
+        db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time",
+                   id=user.get_user, symbol=symbol, bought=bought, sold=selling, price=price, time=date)
+
+        return index()
+
+    # Get the stocks that the user has
+    # First see if the user has bought the stock
+    stocks = db.execute("SELECT symbol FROM history WHERE id = :id",
+                      id = user.get_user())
+    your_stocks = []
+    for i in range(len(stocks)):
+        your_stocks.append(stocks[i]['symbol'])
+
+    # write to the page
+    return render_template("sell.html", symbols=your_stocks)
+
+
+
 
 
 def errorhandler(e):
