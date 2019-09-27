@@ -73,7 +73,9 @@ def index():
 
     total_stock_value = 0
     for i in range(len(shares)):
-        total_stock_value += float(shares[i]) * float(cost_stock[i])
+        total_stock_value += usd(shares[i]) * usd(cost_stock[i])
+
+    total_stock_value = usd(total_stock_value)
 
     your_money = db.execute('SELECT cash FROM users WHERE id = :id',
                             id = user.get_user())
@@ -106,7 +108,7 @@ def buy():
         price = quote.get('price')
         symbol = quote.get('symbol')
 
-        price = float(shares) * float(price)
+        price = usd(shares) * usd(price)
 
         # Can the user afford it?
         update_string = "SELECT cash FROM users WHERE id = {}".format(user.get_user())
@@ -304,7 +306,7 @@ def register():
                                   username=request.form.get("username"), hash=hashed_pw)
         if not add_username:
             check(False)
-            return apology("username has been taken", 200)
+            return apology("username has been taken", 400)
 
 
         # Log in automatically
@@ -340,9 +342,9 @@ def sell():
         can_sell = db.execute("SELECT shares FROM history WHERE id = :id AND symbol = :symbol",
                     id = user.get_user(), symbol = stock_sold)[0]['shares']
 
-        if float(selling) > float(can_sell):
+        if usd(selling) > usd(can_sell):
             selling = can_sell
-        shares_left = float(can_sell) - float(selling)
+        shares_left = usd(can_sell) - usd(selling)
         # Now remove appropriate amount of stock
         db.execute("UPDATE history SET shares = :shares_left WHERE id = :id AND symbol = :symbol",
                     shares_left = shares_left, id = user.get_user(), symbol = stock_sold)
@@ -354,13 +356,13 @@ def sell():
         print(price, '<--- price of the stock you sold')
         symbol = quote.get('symbol')
 
-        sell_value = float(price) * float(selling)
+        sell_value = usd(price) * usd(selling)
 
         # retrieve your current cash value
         cash = db.execute("SELECT cash FROM users WHERE id = :id",
                           id = user.get_user())[0]['cash']
 
-        cash = float(cash) + float(sell_value)
+        cash = usd(cash) + usd(sell_value)
         # Update cash
         db.execute("UPDATE users SET cash = :cash WHERE id = :id",
                    cash = cash, id = user.get_user())
