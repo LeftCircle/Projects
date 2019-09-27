@@ -159,9 +159,13 @@ def buy():
 
 
 @app.route("/check", methods=["GET"])
-def check():
+def check(tof):
     """Return true if username available, else false, in JSON format"""
-    return jsonify("TODO")
+   # Ensure username was submitted
+
+    if tof == False:
+        return jsonify(False)
+    return jsonify(False)
 
 
 @app.route("/history")
@@ -230,8 +234,7 @@ def login():
         user.set_user(session["user_id"])
         print('and the actual user is ', user.get_user())
 
-        # Redirect user to home page
-        return redirect("/")
+        return redirect("/", 200)
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -276,7 +279,6 @@ def register():
     """Register user"""
     # Check if fields are blank
     if request.method == "POST":
-
         # Ensure username was submitted
         if not request.form.get("username"):
             return apology("must provide username", 400)
@@ -286,7 +288,7 @@ def register():
             return apology("must provide password", 400)
 
         # Ensure second password submitted
-        elif not request.form.get("confirm password"):
+        elif not request.form.get("confirmation"):
             return apology("must confirm password", 400)
 
         # Check to see if passwords match
@@ -301,7 +303,9 @@ def register():
         add_username = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)",
                                   username=request.form.get("username"), hash=hashed_pw)
         if not add_username:
-            return apology("username has been taken")
+            check(False)
+            return apology("username has been taken", 200)
+
 
         # Log in automatically
         rows = db.execute("SELECT * FROM users WHERE username = :username",
@@ -314,7 +318,8 @@ def register():
         user.set_user(session['user_id'])
         print('and the actual user is ', user.get_user())
         # Redirect user to home page
-        return redirect("/", 200)
+        check(True)
+        return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
