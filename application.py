@@ -73,13 +73,16 @@ def index():
 
     total_stock_value = 0
     for i in range(len(shares)):
-        total_stock_value += usd(shares[i]) * usd(cost_stock[i])
+        total_stock_value += float(shares[i]) * float(cost_stock[i])
 
-    total_stock_value = usd(total_stock_value)
+    total_stock_value = (total_stock_value)
 
     your_money = db.execute('SELECT cash FROM users WHERE id = :id',
-                            id = user.get_user())
-
+                            id = user.get_user())[0]['cash']
+    your_money = usd(float(your_money))
+    total_stock_value = (total_stock_value)
+    cost_stock = (cost_stock)
+    #shares = int(shares)
 
     return render_template('index.html', symbols=symbols, shares=shares, cost_stock=cost_stock,
                             total_stock_value=total_stock_value, cash=your_money)
@@ -108,7 +111,7 @@ def buy():
         price = quote.get('price')
         symbol = quote.get('symbol')
 
-        price = usd(shares) * usd(price)
+        price = float(shares) * float(price)
 
         # Can the user afford it?
         update_string = "SELECT cash FROM users WHERE id = {}".format(user.get_user())
@@ -152,6 +155,9 @@ def buy():
         db.execute("INSERT INTO full_history (id, symbol, bought, sold, price, time) VALUES(:id, :symbol, :bought,:sold,:price,:time)",
                    id=user.get_user(), symbol=symbol, bought=shares, sold=sold, price=price, time=date)
 
+        price = usd(float(price))
+        money_left = usd(float(money_left))
+        shares = int(shares)
         return render_template("bought.html", amount=shares, name=name, price=price, left=money_left)
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -193,9 +199,9 @@ def history():
                          id = user.get_user())
     for i in range(len(symbols_hist)):
         master.append([symbols_hist[i]['symbol'],
-                      bought_hist[i]['bought'],
-                      sold_hist[i]['sold'],
-                      price_hist[i]['price'],
+                      int(bought_hist[i]['bought']),
+                      int(sold_hist[i]['sold']),
+                      (usd(price_hist[i]['price'])),
                       time_hist[i]['time']])
 
 
@@ -236,7 +242,7 @@ def login():
         user.set_user(session["user_id"])
         print('and the actual user is ', user.get_user())
 
-        return redirect("/", 200)
+        return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -269,6 +275,8 @@ def quote():
         name = quote.get('name')
         price = quote.get('price')
         symbol = quote.get('symbol')
+
+
         return render_template("quoteValue.html", name=name, price=price, symbol=symbol)
     # User reached route via GET (as by clicking a link or via redirect)
     else:
@@ -342,9 +350,9 @@ def sell():
         can_sell = db.execute("SELECT shares FROM history WHERE id = :id AND symbol = :symbol",
                     id = user.get_user(), symbol = stock_sold)[0]['shares']
 
-        if usd(selling) > usd(can_sell):
+        if float(selling) > float(can_sell):
             selling = can_sell
-        shares_left = usd(can_sell) - usd(selling)
+        shares_left = float(can_sell) - float(selling)
         # Now remove appropriate amount of stock
         db.execute("UPDATE history SET shares = :shares_left WHERE id = :id AND symbol = :symbol",
                     shares_left = shares_left, id = user.get_user(), symbol = stock_sold)
@@ -356,13 +364,13 @@ def sell():
         print(price, '<--- price of the stock you sold')
         symbol = quote.get('symbol')
 
-        sell_value = usd(price) * usd(selling)
+        sell_value = float(price) * float(selling)
 
         # retrieve your current cash value
         cash = db.execute("SELECT cash FROM users WHERE id = :id",
                           id = user.get_user())[0]['cash']
 
-        cash = usd(cash) + usd(sell_value)
+        cash = float(cash) + float(sell_value)
         # Update cash
         db.execute("UPDATE users SET cash = :cash WHERE id = :id",
                    cash = cash, id = user.get_user())
