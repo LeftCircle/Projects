@@ -1,3 +1,5 @@
+--- source code is avaliable in the social web project ---
+
 This program uses pygame to create a simple physics engine.
 The code is written in python, and creates nodes that interact with physical forces.
 The nodes can be affected by spring forces, gravity, drag, and collisions. The nodes
